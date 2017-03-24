@@ -13,7 +13,7 @@ from pysteam import paths
 from pysteam import shortcuts
 
 def _dummy_shortcut():
-  return model.Shortcut("Banjo Kazooie", "Banjo Kazooie.exe", "", "", [])
+  return model.Shortcut("Banjo Kazooie", "Banjo Kazooie.exe", "", "", "", "", False, False, False, 0, [])
 
 class TestShortcut(unittest.TestCase):
 
@@ -29,7 +29,7 @@ class TestShortcut(unittest.TestCase):
   ])
   def test_appid_generation(self, name, exe, expected):
     """Tests that pysteam generates the correct appid hash for shortcuts."""
-    s = model.Shortcut(name, exe, "", "", None)
+    s = model.Shortcut(name, exe, "", "", "", "", False, False, False, 0, None)
     self.assertEqual(shortcuts.shortcut_app_id(s), expected)
 
   def test_write_shortcuts_creates_file_if_it_doesnt_exist(self):

@@ -29,10 +29,10 @@ class TestVDFParsing(unittest.TestCase):
   def test_vdf_parsing(self, file):
     """Tests that parsing and regenerating a vdf file generates the same contents"""
     path = os.path.join(vdfs_folder, file)
-    file_contents = open(path,"r").read()
+    file_contents = open(path, "r").read()
     shortcuts = ShortcutParser().parse(path)
     generated_contents = ShortcutGenerator().to_string(shortcuts)
-    self.assertEqual(file_contents.lower(),generated_contents.lower())
+    self.assertEqual(file_contents.lower(), generated_contents.lower())
 
   def test_returns_empty_list_when_file_doesnt_exist(self):
     invalid_path = os.path.join("this", "path", "doesnt", "exist")

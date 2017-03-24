@@ -4,11 +4,17 @@ import collections
 # Represents a single shortcut on the user's machine. These are the 5 fields
 # which are stored in shortcuts.vdf.
 Shortcut = collections.namedtuple('Shortcut', [
-  'name',
-  'exe',
-  'startdir',
-  'icon',
-  'tags',
+  'name',                  # str
+  'exe',                   # str
+  'startdir',              # str
+  'icon',                  # str
+  'shortcut_path',         # str
+  'launch_options',        # str
+  'hidden',                # bool
+  'allow_desktop_config',  # bool
+  'open_vr',               # bool
+  'last_play_time',        # int
+  'tags',                  # []
 ])
 
 # Represents a Steam installation. Since we don't really care about where the

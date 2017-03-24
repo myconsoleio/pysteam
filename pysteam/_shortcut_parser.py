@@ -7,6 +7,7 @@ Copyright (c) 2013 Scott Rice. All rights reserved.
 """
 
 import sys
+import struct
 import os
 import re
 
@@ -50,21 +51,45 @@ class ShortcutParser(object):
 
   def match_shortcut_string(self,string):
     # I am going to cheat a little here. I am going to match specifically
-    # for the shortcut string (Appname, Exe, StartDir, etc), as oppposed
+    # for the shortcut string (Appname, Exe, StartDir, etc), as opposed
     # to matching for general Key-Value pairs. This could possibly create a
     # lot of work for me later, but for now it will get the job done
-    match = re.match(ur"\u0001AppName\u0000(.*)\u0000\u0001Exe\u0000(.*)\u0000\u0001StartDir\u0000(.*)\u0000\u0001icon\u0000(.*)\u0000\u0000tags\u0000(.*)\u0008",string, re.IGNORECASE)
+    pattern = (
+        ur"\u0001AppName\u0000(.*)\u0000"                               # groups[0]  appname
+        ur"\u0001exe\u0000(.*)\u0000"                                   # groups[1]  exe
+        ur"\u0001StartDir\u0000(.*)\u0000"                              # groups[2]  startdir
+        ur"\u0001icon\u0000(.*)\u0000"                                  # groups[3]  icon
+        ur"\u0001ShortcutPath\u0000(.*)\u0000"                          # groups[4]  shortcut path
+        ur"\u0001LaunchOptions\u0000(.*)\u0000"                         # groups[5]  launch options
+        ur"\u0002IsHidden\u0000(\u0000|\u0001)(?:\u0000){3}"            # groups[6]  hidden
+        ur"\u0002AllowDesktopConfig\u0000(\u0000|\u0001)(?:\u0000){3}"  # groups[7]  allow_desktop_config
+        ur"\u0002OpenVR\u0000(\u0000|\u0001)(?:\u0000){3}"              # groups[8]  open_vr
+        ur"\u0002LastPlayTime\u0000(.{4})"                              # groups[9]  last_play_time
+        ur"\u0000tags\u0000(.*)"                                        # groups[10] tags
+        ur"\u0008"                                                      # end
+    )
+    match = re.match(pattern, string, re.IGNORECASE)
     if match:
       # The 'groups' that are returned by the match should be the data
       # contained in the file. Now just make a Shortcut out of that data
       groups = match.groups()
-      appname = groups[0]
-      exe = groups[1]
-      startdir = groups[2]
-      icon = groups[3]
-      tags = self.match_tags_string(groups[4])
-      return Shortcut(appname,exe,startdir,icon,tags)
+      return Shortcut(
+          groups[0],
+          groups[1],
+          groups[2],
+          groups[3],
+          groups[4],
+          groups[5],
+          groups[6] == '\x01',
+          groups[7] == '\x01',
+          groups[8] == '\x01',
+          struct.unpack('<i', groups[9])[0],
+          self.match_tags_string(groups[10])
+      )
     else:
+      print("Unable to parse shortcuts.vdf, try adding a shortcut in steam to ensure latest file format")
+      print(string)
+      exit()
       return None
 
   def match_tags_string(self,string):
