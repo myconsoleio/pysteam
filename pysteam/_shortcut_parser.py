@@ -16,12 +16,14 @@ from model import Shortcut
 class ShortcutParser(object):
 
   def parse(self, path, require_exists=False):
+
     if not os.path.exists(path):
       if not require_exists:
         return []
       raise IOError("Shortcuts file '%s' does not exist" % path)
 
     file_contents = open(path, "r").read()
+
     return self.match_base(file_contents)
 
   def match_base(self,string):
@@ -54,25 +56,28 @@ class ShortcutParser(object):
     # for the shortcut string (Appname, Exe, StartDir, etc), as opposed
     # to matching for general Key-Value pairs. This could possibly create a
     # lot of work for me later, but for now it will get the job done
+
     pattern = (
-        ur"\u0001AppName\u0000(.*)\u0000"                               # groups[0]  appname
-        ur"\u0001exe\u0000(.*)\u0000"                                   # groups[1]  exe
-        ur"\u0001StartDir\u0000(.*)\u0000"                              # groups[2]  startdir
-        ur"\u0001icon\u0000(.*)\u0000"                                  # groups[3]  icon
-        ur"\u0001ShortcutPath\u0000(.*)\u0000"                          # groups[4]  shortcut path
-        ur"\u0001LaunchOptions\u0000(.*)\u0000"                         # groups[5]  launch options
-        ur"\u0002IsHidden\u0000(\u0000|\u0001)(?:\u0000){3}"            # groups[6]  hidden
-        ur"\u0002AllowDesktopConfig\u0000(\u0000|\u0001)(?:\u0000){3}"  # groups[7]  allow_desktop_config
-        ur"\u0002OpenVR\u0000(\u0000|\u0001)(?:\u0000){3}"              # groups[8]  open_vr
-        ur"\u0002LastPlayTime\u0000(.{4})"                              # groups[9]  last_play_time
-        ur"\u0000tags\u0000(.*)"                                        # groups[10] tags
-        ur"\u0008"                                                      # end
+        ur"\x01AppName\x00(.*)\x00"                          # groups[0]  appname
+        ur"\x01exe\x00(.*)\x00"                              # groups[1]  exe
+        ur"\x01StartDir\x00(.*)\x00"                         # groups[2]  startdir
+        ur"\x01icon\x00(.*)\x00"                             # groups[3]  icon
+        ur"\x01ShortcutPath\x00(.*)\x00"                     # groups[4]  shortcut path
+        ur"\x01LaunchOptions\x00(.*)\x00"                    # groups[5]  launch options
+        ur"\x02IsHidden\x00(\x00|\x01)(?:\x00){3}"           # groups[6]  hidden
+        ur"\x02AllowDesktopConfig\x00(\x00|\x01)(?:\x00){3}" # groups[7]  allow_desktop_config
+        ur"\x02AllowOverlay\x00(\x00|\x01)(?:\x00){3}"       # groups[8]  allow_overlay
+        ur"\x02OpenVR\x00(\x00|\x01)(?:\x00){3}"             # groups[9]  open_vr
+        ur"\x02LastPlayTime\x00(.{4})"                       # groups[10] last_play_time
+        ur"\x00tags\x00(.*)"                                 # groups[11] tags
+        ur"\x08"                                             # end
     )
     match = re.match(pattern, string, re.IGNORECASE)
     if match:
       # The 'groups' that are returned by the match should be the data
       # contained in the file. Now just make a Shortcut out of that data
       groups = match.groups()
+
       return Shortcut(
           groups[0],
           groups[1],
@@ -83,12 +88,12 @@ class ShortcutParser(object):
           groups[6] == '\x01',
           groups[7] == '\x01',
           groups[8] == '\x01',
-          struct.unpack('<i', groups[9])[0],
-          self.match_tags_string(groups[10])
+          groups[9] == '\x01',
+          struct.unpack('<i', groups[10])[0],
+          self.match_tags_string(groups[11])
       )
     else:
       print("Unable to parse shortcuts.vdf, try adding a shortcut in steam to ensure latest file format")
-      print(string)
       exit()
       return None
 

@@ -40,7 +40,7 @@ def default_linux_userdata_path():
 # =============================================================================
 # User-specific paths
 #
-# These functions all take a `user_context` parameter (an instance of the 
+# These functions all take a `user_context` parameter (an instance of the
 # LocalUserContext class) and return various paths that are specific to that
 # user. For example, this could be the location of that user's shortcuts.vdf
 # file, or their `grid` directory (where custom images are stored)

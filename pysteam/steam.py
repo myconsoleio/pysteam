@@ -52,7 +52,7 @@ def local_user_ids(steam):
   # subdirectory for every user which has logged into this system (and
   # therefore that Steam has data for)
   return os.listdir(steam.userdata_directory)
-  
+
 def local_user_contexts(steam):
   if steam is None:
     return None

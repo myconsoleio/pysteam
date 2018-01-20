@@ -12,6 +12,7 @@ Shortcut = collections.namedtuple('Shortcut', [
   'launch_options',        # str
   'hidden',                # bool
   'allow_desktop_config',  # bool
+  'allow_overlay',         # bool
   'open_vr',               # bool
   'last_play_time',        # int
   'tags',                  # []

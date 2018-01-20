@@ -42,6 +42,7 @@ class ShortcutGenerator(object):
         string += self.generate_keyvalue_pair("LaunchOptions", shortcut.launch_options)
         string += self.generate_keyvalue_pair_bool("IsHidden", shortcut.hidden)
         string += self.generate_keyvalue_pair_bool("AllowDesktopConfig", shortcut.allow_desktop_config)
+        string += self.generate_keyvalue_pair_bool("AllowOverlay", shortcut.allow_overlay)
         string += self.generate_keyvalue_pair_bool("OpenVR", shortcut.open_vr)
         string += self.generate_keyvalue_pair_int("LastPlayTime", shortcut.last_play_time)
 

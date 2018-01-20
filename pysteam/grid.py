@@ -18,7 +18,7 @@ def is_valid_extension(extension):
   """Returns True is `extension` is a valid image extension to be used with
   custom Steam grid images. There are only 4 such extensions - `.png`, `.jpg`,
   `.jpeg`, and `.tga`.
-  
+
   This function will return true even if the parameter `expression` does not
   include the leading '.'"""
   return extension in VALID_EXTENSIONS or \
@@ -62,7 +62,7 @@ def set_custom_image(user_context, app_id, image_path):
     img = get_custom_image(user_context, app_id)
     assert(img is not None)
     os.remove(img)
-  
+
   # Set the new image
   parent_dir = paths.custom_images_directory(user_context)
   new_path = os.path.join(parent_dir, app_id + ext)
